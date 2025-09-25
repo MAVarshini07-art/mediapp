@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Confirmation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            border-radius: 50%;
+            animation: fall 5s linear forwards;
+        }
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-12">
+        <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden" data-aos="zoom-in">
+            <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-6 text-white">
+                <h1 class="text-3xl font-bold">Appointment Confirmed!</h1>
+                <p class="mt-2">Thank you for using our service</p>
+            </div>
+            
+            <div class="p-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4">Your Details</h2>
+                        <div class="space-y-4">
+                            <div class="flex items-center">
+                                <i data-feather="user" class="text-gray-500 mr-3"></i>
+                                <span id="confName"></span>
+                            </div>
+                            <div class="flex items-center">
+                                <i data-feather="phone" class="text-gray-500 mr-3"></i>
+                                <span id="confPhone"></span>
+                            </div>
+                            <div class="flex items-center">
+                                <i data-feather="droplet" class="text-gray-500 mr-3"></i>
+                                <span id="confBloodGroup"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4">Appointment Details</h2>
+                        <div class="space-y-4">
+                            <div class="flex items-center">
+                                <i data-feather="home" class="text-gray-500 mr-3"></i>
+                                <span id="confHospital"></span>
+                            </div>
+                            <div class="flex items-center">
+                                <i data-feather="calendar" class="text-gray-500 mr-3"></i>
+                                <span id="confTiming"></span>
+                            </div>
+                            <div class="flex items-center">
+                                <i data-feather="hash" class="text-gray-500 mr-3"></i>
+                                <span id="confSeat"></span>
+                            </div>
+                            <div class="flex items-center">
+                                <i data-feather="clock" class="text-gray-500 mr-3"></i>
+                                <span id="confWaitTime"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 pt-8 border-t border-gray-200">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Feedback</h2>
+                    <textarea id="feedback" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" rows="3" placeholder="Please share your feedback..."></textarea>
+                    
+                    <div class="mt-6 flex justify-between items-center">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="goodFeedback" class="mr-2">
+                            <label for="goodFeedback" class="text-gray-700">I had a good experience</label>
+                        </div>
+                        
+                        <button onclick="submitFeedback()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-md transition duration-300">
+                            Submit Feedback
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        AOS.init();
+        feather.replace();
+        
+        // Load user data
+        const userData = JSON.parse(localStorage.getItem('userData'));
+        document.getElementById('confName').textContent = userData.name;
+        document.getElementById('confPhone').textContent = userData.phone;
+        document.getElementById('confBloodGroup').textContent = `Blood Group: ${userData.bloodGroup}`;
+        document.getElementById('confHospital').textContent = userData.hospital;
+        document.getElementById('confTiming').textContent = userData.timing;
+        document.getElementById('confSeat').textContent = `Seat: ${userData.seat}`;
+        
+        // Calculate random wait time (5-30 minutes)
+        const waitTime = Math.floor(Math.random() * 26) + 5;
+        document.getElementById('confWaitTime').textContent = `Estimated wait time: ${waitTime} minutes`;
+        
+        function submitFeedback() {
+            const feedback = document.getElementById('feedback').value;
+            const isGoodFeedback = document.getElementById('goodFeedback').checked;
+            
+            if (isGoodFeedback) {
+                // Show confetti
+                createConfetti();
+                
+                // Show success message
+                setTimeout(() => {
+                    alert('Thank you for your feedback! We appreciate your time.');
+                }, 1500);
+            } else {
+                alert('Thank you for your feedback. We will work to improve our services.');
+            }
+        }
+        
+        function createConfetti() {
+            const colors = ['#f00', '#0f0', '#00f', '#ff0', '#f0f', '#0ff'];
+            
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                confetti.style.opacity = Math.random();
+                confetti.style.width = (Math.random() * 10 + 5) + 'px';
+                confetti.style.height = (Math.random() * 10 + 5) + 'px';
+                
+                document.body.appendChild(confetti);
+                
+                // Remove confetti after animation
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
+        }
+    </script>
+    </script>
+</body>
+</html>
+
+
+This implementation includes all the requested features:
+1. Multi-page flow with SOS button and language selection
+2. User registration form
+3. Hospital selection (government/private)
+4. Category selection (emergency/senior/general) with subcategories
+5. Doctor timing selection
+6. Seat allocation system with two counters (numbers and letters)
+7. Priority-based seat allocation logic
+8. Confirmation page with user details and estimated wait time
+9. Feedback system with confetti animation for good feedback
+
+The system stores user data in localStorage to maintain state between pages and includes responsive design with TailwindCSS.

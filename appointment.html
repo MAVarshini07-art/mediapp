@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Booking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        .category-card:hover {
+            transform: scale(1.03);
+        }
+        .seat {
+            transition: all 0.3s ease;
+        }
+        .seat:hover:not(.booked):not(.your-seat) {
+            background-color: #d1d5db;
+        }
+        .booked {
+            background-color: #ef4444;
+            color: white;
+            cursor: not-allowed;
+        }
+        .your-seat {
+            background-color: #10b981;
+            color: white;
+        }
+        .timing-option:hover:not(.selected) {
+            background-color: #e5e7eb;
+        }
+        .selected {
+            background-color: #3b82f6;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8">
+        <!-- User and Hospital Info -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800" id="userName"></h2>
+                    <p class="text-gray-600" id="hospitalName"></p>
+                </div>
+                <div class="mt-4 md:mt-0">
+                    <div class="flex items-center text-sm text-gray-500">
+                        <i data-feather="phone" class="mr-1 w-4 h-4"></i>
+                        <span id="userPhone"></span>
+                    </div>
+                    <div class="flex items-center text-sm text-gray-500 mt-1">
+                        <i data-feather="droplet" class="mr-1 w-4 h-4"></i>
+                        <span id="userBloodGroup"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Categories -->
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Select Category</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="category-card bg-white rounded-xl shadow-md p-6 transition duration-300 cursor-pointer" onclick="selectCategory('emergency')" data-aos="fade-up">
+                <div class="flex flex-col items-center text-center">
+                    <div class="bg-red-100 p-4 rounded-full mb-4">
+                        <i data-feather="alert-octagon" class="text-red-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Emergency</h3>
+                    <p class="text-gray-600">Fractures, Heart Attacks, Severe Injuries</p>
+                </div>
+            </div>
+            
+            <div class="category-card bg-white rounded-xl shadow-md p-6 transition duration-300 cursor-pointer" onclick="selectCategory('senior')" data-aos="fade-up" data-aos-delay="100">
+                <div class="flex flex-col items-center text-center">
+                    <div class="bg-purple-100 p-4 rounded-full mb-4">
+                        <i data-feather="user" class="text-purple-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Senior Citizen</h3>
+                    <p class="text-gray-600">Priority care for elderly patients</p>
+                </div>
+            </div>
+            
+            <div class="category-card bg-white rounded-xl shadow-md p-6 transition duration-300 cursor-pointer" onclick="selectCategory('general')" data-aos="fade-up" data-aos-delay="200">
+                <div class="flex flex-col items-center text-center">
+                    <div class="bg-blue-100 p-4 rounded-full mb-4">
+                        <i data-feather="thermometer" class="text-blue-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">General</h3>
+                    <p class="text-gray-600">Fever, Infections, Common Diseases</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Subcategories (hidden by default) -->
+        <div id="subcategoriesSection" class="hidden mb-12">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Select Subcategory</h2>
+            <div id="subcategories" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+        </div>
+        
+        <!-- Doctor Timings (hidden by default) -->
+        <div id="timingsSection" class="hidden mb-12">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Select Doctor Availability</h2>
+            <div id="timings" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+        </div>
+        
+        <!-- Seat Selection (hidden by default) -->
+        <div id="seatsSection" class="hidden mb-12">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Appointment Booking Slots</h2>
+            
+            <div class="flex flex-col md:flex-row gap-8 mb-8">
+                <!-- Counter 1 (Numbers 1-100) -->
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-4">Counter 1 (1-100)</h3>
+                    <div class="grid grid-cols-10 gap-2">
+                        <!-- Seats will be generated by JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- Counter 2 (Letters A-Z and A1-A100) -->
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-4">Counter 2 (A-Z & A1-A100)</h3>
+                    <div class="grid grid-cols-10 gap-2">
+                        <!-- Seats will be generated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Allocation Details -->
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h3 class="text-lg font-semibold text-blue-800 mb-2">Allocation Details</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <span class="text-sm text-gray-600">Allotment Number:</span>
+                        <p id="allotmentNumber" class="font-semibold">-</p>
+                    </div>
+                    <div>
+                        <span class="text-sm text-gray-600">Timing:</span>
+                        <p id="allotmentTiming" class="font-semibold">-</p>
+                    </div>
+                    <div>
+                        <span class="text-sm text-gray-600">Day:</span>
+                        <p id="allotmentDay" class="font-semibold">-</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Finish Button (hidden by default) -->
+        <div id="finishSection" class="hidden text-center">
+            <button onclick="completeAppointment()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300">
+                Finish Appointment
+            </button>
+        </div>
+    </div>
+
+    <script>
+        AOS.init();
+        feather.replace();
+        
+        // Load user data
+        const userData = JSON.parse(localStorage.getItem('userData'));
+        document.getElementById('userName').textContent = userData.name;
+        document.getElementById('hospitalName').textContent = `Hospital: ${userData.hospital}`;
+        document.getElementById('userPhone').textContent = userData.phone;
+        document.getElementById('userBloodGroup').textContent = `Blood Group: ${userData.bloodGroup}`;
+        
+        let selectedCategory = '';
+        let selectedSubcategory = '';
+        let selectedTiming = '';
+        let selectedSeat = '';
+        
+        // Subcategories data
+        const subcategories = {
+            emergency: ['Fractures', 'Heart Attack', 'Stroke', 'Severe Bleeding', 'Breathing Difficulties'],
+            senior: ['General Checkup', 'Chronic Conditions', 'Medication Review', 'Mobility Issues'],
+            general: ['Fever', 'Cold & Cough', 'Stomach Pain', 'Headache', 'Skin Infections']
+        };
+        
+        // Doctor timings data
+        const timings = [
+            { day: 'Monday', slots: ['9:00 AM - 11:00 AM', '2:00 PM - 4:00 PM', '6:00 PM - 8:00 PM'] },
+            { day: 'Tuesday', slots: ['10:00 AM - 12:00 PM', '3:00 PM - 5:00 PM'] },
+            { day: 'Wednesday', slots: ['9:00 AM - 11:00 AM', '2:00 PM - 4:00 PM', '6:00 PM - 8:00 PM'] },
+            { day: 'Thursday', slots: ['10:00 AM - 12:00 PM', '3:00 PM - 5:00 PM'] },
+            { day: 'Friday', slots: ['9:00 AM - 11:00 AM', '2:00 PM - 4:00 PM'] },
+            { day: 'Saturday', slots: ['10:00 AM - 1:00 PM'] },
+            { day: 'Sunday', slots: ['Emergency Only'] }
+        ];
+        
+        function selectCategory(category) {
+            selectedCategory = category;
+            
+            // Show subcategories
+            const subcategoriesSection = document.getElementById('subcategoriesSection');
+            subcategoriesSection.classList.remove('hidden');
+            
+            // Populate subcategories
+            const subcategoriesContainer = document.getElementById('subcategories');
+            subcategoriesContainer.innerHTML = '';
+            
+            subcategories[category].forEach(sub => {
+                const subcategoryElement = document.createElement('div');
+                subcategoryElement.className = 'bg-white rounded-lg shadow-sm p-4 text-center cursor-pointer hover:bg-gray-50';
+                subcategoryElement.textContent = sub;
+                subcategoryElement.onclick = () => selectSubcategory(sub);
+                subcategoriesContainer.appendChild(subcategoryElement);
+            });
+        }
+        
+        function selectSubcategory(subcategory) {
+            selectedSubcategory = subcategory;
+            
+            // Show timings
+            const timingsSection = document.getElementById('timingsSection');
+            timingsSection.classList.remove('hidden');
+            
+            // Populate timings
+            const timingsContainer = document.getElementById('timings');
+            timingsContainer.innerHTML = '';
+            
+            timings.forEach(day => {
+                day.slots.forEach(slot => {
+                    const timingElement = document.createElement('div');
+                    timingElement.className = 'timing-option bg-white rounded-lg shadow-sm p-3 text-center cursor-pointer';
+                    timingElement.innerHTML = `
+                        <div class="font-medium">${day.day}</div>
+                        <div class="text-sm">${slot}</div>
+                    `;
+                    timingElement.onclick = () => selectTiming(day.day, slot);
+                    timingsContainer.appendChild(timingElement);
+                });
+            });
+        }
+        
+        function selectTiming(day, slot) {
+            selectedTiming = `${day}, ${slot}`;
+            
+            // Remove previous selection
+            const previousSelected = document.querySelector('.selected');
+            if (previousSelected) {
+                previousSelected.classList.remove('selected');
+            }
+            
+            // Mark current selection
+            event.target.classList.add('selected');
+            
+            // Show seats
+            const seatsSection = document.getElementById('seatsSection');
+            seatsSection.classList.remove('hidden');
+            
+            // Generate seats
+            generateSeats();
+            
+            // Show finish button
+            document.getElementById('finishSection').classList.remove('hidden');
+        }
+        
+        function generateSeats() {
+            // Update allocation details
+            document.getElementById('allotmentTiming').textContent = selectedTiming;
+            document.getElementById('allotmentDay').textContent = selectedTiming.split(',')[0];
+            
+            // Counter 1 (Numbers 1-100)
+            const counter1 = document.querySelector('#seatsSection > div > div:nth-child(1) > div');
+            counter1.innerHTML = '';
+            
+            // Generate priority-based booking pattern
+            const totalSeats = 100;
+            let bookedSeats = 0;
+            
+            // Book seats based on priority
+            if (selectedCategory === 'emergency') {
+                // Emergency gets first 20% priority seats
+                bookedSeats = Math.floor(totalSeats * 0.2);
+            } else if (selectedCategory === 'senior') {
+                // Senior gets next 30% priority seats (total 50% booked)
+                bookedSeats = Math.floor(totalSeats * 0.5);
+            } else {
+                // General gets remaining seats (70% booked)
+                bookedSeats = Math.floor(totalSeats * 0.7);
+            }
+            
+            for (let i = 1; i <= totalSeats; i++) {
+                const seat = document.createElement('div');
+                seat.className = 'seat h-10 flex items-center justify-center rounded-md border border-gray-300 cursor-pointer';
+                seat.textContent = i;
+                
+                // Book seats based on priority
+                if (i <= bookedSeats) {
+                    seat.classList.add('booked');
+                }
+                
+                seat.onclick = function() {
+                    if (!this.classList.contains('booked')) {
+                        // Remove previous selection
+                        const previousSelected = document.querySelector('.your-seat');
+                        if (previousSelected) {
+                            previousSelected.classList.remove('your-seat');
+                        }
+                        
+                        // Select this seat
+                        this.classList.add('your-seat');
+                        selectedSeat = `Counter 1 - ${i}`;
+                        document.getElementById('allotmentNumber').textContent = selectedSeat;
+                    }
+                };
+                
+                counter1.appendChild(seat);
+            }
+            
+            // Counter 2 (Letters A-Z, then A1-A100)
+            const counter2 = document.querySelector('#seatsSection > div > div:nth-child(2) > div');
+            counter2.innerHTML = '';
+            
+            // A-Z (26 letters)
+            for (let i = 65; i <= 90; i++) {
+                const letter = String.fromCharCode(i);
+                const seat = document.createElement('div');
+                seat.className = 'seat h-10 flex items-center justify-center rounded-md border border-gray-300 cursor-pointer';
+                seat.textContent = letter;
+                
+                // Book seats based on priority (same pattern as counter 1)
+                const seatIndex = i - 64; // A=1, B=2, etc.
+                let isBooked = false;
+                
+                if (selectedCategory === 'emergency') {
+                    isBooked = seatIndex <= 5; // First 5 letters booked
+                } else if (selectedCategory === 'senior') {
+                    isBooked = seatIndex <= 13; // First 13 letters booked
+                } else {
+                    isBooked = seatIndex <= 18; // First 18 letters booked
+                }
+                
+                if (isBooked) {
+                    seat.classList.add('booked');
+                }
+                
+                seat.onclick = function() {
+                    if (!this.classList.contains('booked')) {
+                        // Remove previous selection
+                        const previousSelected = document.querySelector('.your-seat');
+                        if (previousSelected) {
+                            previousSelected.classList.remove('your-seat');
+                        }
+                        
+                        // Select this seat
+                        this.classList.add('your-seat');
+                        selectedSeat = `Counter 2 - ${letter}`;
+                        document.getElementById('allotmentNumber').textContent = selectedSeat;
+                    }
+                };
+                
+                counter2.appendChild(seat);
+            }
+            
+            // A1-A100
+            for (let i = 1; i <= 100; i++) {
+                const seat = document.createElement('div');
+                seat.className = 'seat h-10 flex items-center justify-center rounded-md border border-gray-300 cursor-pointer';
+                seat.textContent = `A${i}`;
+                
+                // Book seats based on priority
+                let isBooked = false;
+                
+                if (selectedCategory === 'emergency') {
+                    isBooked = i <= 20; // First 20 A-series booked
+                } else if (selectedCategory === 'senior') {
+                    isBooked = i <= 50; // First 50 A-series booked
+                } else {
+                    isBooked = i <= 70; // First 70 A-series booked
+                }
+                
+                if (isBooked) {
+                    seat.classList.add('booked');
+                }
+                
+                seat.onclick = function() {
+                    if (!this.classList.contains('booked')) {
+                        // Remove previous selection
+                        const previousSelected = document.querySelector('.your-seat');
+                        if (previousSelected) {
+                            previousSelected.classList.remove('your-seat');
+                        }
+                        
+                        // Select this seat
+                        this.classList.add('your-seat');
+                        selectedSeat = `Counter 2 - A${i}`;
+                        document.getElementById('allotmentNumber').textContent = selectedSeat;
+                    }
+                };
+                
+                counter2.appendChild(seat);
+            }
+        }
+        
+        function completeAppointment() {
+            if (!selectedSeat) {
+                alert('Please select a seat');
+                return;
+            }
+            
+            // Save appointment details
+            userData.category = selectedCategory;
+            userData.subcategory = selectedSubcategory;
+            userData.timing = selectedTiming;
+            userData.seat = selectedSeat;
+            localStorage.setItem('userData', JSON.stringify(userData));
+            
+            // Redirect to confirmation page
+            window.location.href = 'confirmation.html';
+        }
+    </script>
+    </script>
+</body>
+</html>

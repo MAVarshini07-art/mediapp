@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>medipath</title>
+<style>
+      :root{
+    --distance: 30px;    /* how far from left they start */
+    --duration: 600ms;   /* animation duration */
+
+    --stagger: 80ms;     /* delay between letters */
+  }
+  .Btn{
+    color:white;
+    background-color:blue;
+  padding: 30px 30px 30px 30px;
+  border-radius: 40px;
+  box-shadow: grey 10px 10px 10px;
+  cursor: pointer;
+  border-color: rgb(3, 3, 3);
+  font-size: 30px;
+  font-weight: bold;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  }
+  .Btn:hover{
+    color:rgb(68, 199, 251);
+    background-color: white;
+    transform:translateY(-2px);
+    opacity: 3s;
+
+
+  }
+  .Btn:active{
+    color:blue;
+    background-color: rgb(8, 8, 8);
+    transform:translateY(1px)
+  }
+  
+
+   .b-body{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    background:linear-gradient(to right,white,lightblue);
+    color:navy;
+    margin:0;
+    text-shadow: 10px 10px 10px grey;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .animated-text{
+    font-size: clamp(28px, 5vw, 56px);
+    white-space: pre-wrap;
+  }
+
+  .animated-text span{
+    display:inline-block;
+    transform: translateX(calc(var(--distance) * -1));
+    opacity:0;
+    animation: slideIn var(--duration) cubic-bezier(.2,.9,.3,1) forwards;
+    font-size: 100px;
+  }
+
+.animated-text span:nth-child(1){animation-delay:calc(0 * var(--stagger));}
+  .animated-text span:nth-child(2){animation-delay:calc(1 * var(--stagger));}
+  .animated-text span:nth-child(3){animation-delay:calc(2 * var(--stagger));}
+  .animated-text span:nth-child(4){animation-delay:calc(3 * var(--stagger));}
+  .animated-text span:nth-child(5){animation-delay:calc(4 * var(--stagger));}
+  /* …repeat as needed depending on your word length */
+
+  @keyframes slideIn {
+    from {
+      transform: translateX(calc(var(--distance) * -1));
+      opacity:0;
+    }
+    60% {
+      transform: translateX(6px); /* overshoot */
+      opacity:1;
+    }
+    to {
+      transform: translateX(0);
+      opacity:1;
+    }
+  }
+</style>
+<body class="b-body">
+<html>
+<div class="animated-text">
+  <span>M</span><span>E</span><span>D</span><span>I</span>
+  <span>P</span><span>A</span><span>T</span><span>H</span>
+  <a href="index.html"><button CLASS="Btn"> REGISTER NOW</button></a>
+</div>
+
+</body>
+</html>
