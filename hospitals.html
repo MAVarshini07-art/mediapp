@@ -13,12 +13,47 @@
         .hospital-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
+            }
+        input{
+            border-radius:40px;
+            height:50px;
+            width:250px;
+            border-color: rgb(11, 11, 11);
+            text-align: center;
+            font-weight: bold;
+            
+            }
+            body{
+                background: linear-gradient(to right,white,lightblue);
+            }
+        
     </style>
 </head>
 <body class="bg-gray-50">
     <div class="container mx-auto px-4 py-12">
         <h1 class="text-3xl font-bold text-center text-gray-800 mb-12">Nearby Hospitals</h1>
+        <center>
+        <label>FIND  HOSPITALS??</label>
+  <title></title>
+
+  <h2></h2>
+  <input class="input" type="text" id="searchInput" placeholder="🎙   Search for hospitals...   🔍  " onkeyup="searchFunction()">
+
+  </center>
+  <script>
+    function searchFunction() {
+      let input = document.getElementById("searchInput").value.toLowerCase();
+      let items = document.querySelectorAll("#itemsList li");
+
+      items.forEach(item => {
+        if (item.textContent.toLowerCase().includes(input)) {
+          item.style.display = "";
+        } else {
+          item.style.display = "none";
+        }
+      });
+    }
+  </script>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <!-- Government Hospitals -->
